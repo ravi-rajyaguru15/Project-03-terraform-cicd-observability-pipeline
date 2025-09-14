@@ -24,7 +24,7 @@ This project is the **final milestone** in a self-designed 3-part DevOps portfol
 
 This project represents a production-style infrastructure pipeline, using Terraform to provision AWS infrastructure, GitHub Actions for CI/CD automation, and observability tools to monitor application and system health.
 
-It automates the end-to-end deployment of a full-stack web application onto an EKS cluster, with persistent storage and network routing
+The k8s objects needs to be deployed manually for the first time just like Project 2. After that, on any code change pushed on git repository triggers and automates the end-to-end deployment of a full-stack web application onto an EKS cluster, with persistent storage and network routing.
 
 The workflow is fully automated:
 Just push code to main branch and GitHub Actions takes care of provisioning, deploying, and verifying.
@@ -120,6 +120,60 @@ Project_03/
 ---
 
 ## How to Deploy (Reproduction steps)
+
+1.  **Prerequisites/Dependencies**:
+      - Local machine with `aws-cli`, `eksctl`, `kubectl`, and `git` installed
+      - AWS account configured via aws cli, and with appropriate IAM user, and access rights
+      - Terraform installed and accessible globally
+      - GitHub repository created to store the project, and configured with appropriate Actions Repository secrets to access your AWS account.  
+      - A remote S3 bucket created manually beforehand (for storing Terraform backend state) with matching name in terraform/terraform.tf file.
+2. Open the bash terminal and fetch the project files via git clone, and navigate into the project folder.
+3. Create EKS cluster via terraform:
+    ```bash
+    terraform init
+    terraform plan
+    terraform apply     # Approve this request with "yes" when Terraform prompt occurs
+
+    # Take a note of the "cluster_endpoint", it will be used to access the web app
+    ```
+4. Connect to the cluster and get node information:
+    ```bash
+    aws eks update-kubeconfig --region us-east-1 --name project3-eks-cluster
+    ```
+    ```bash
+    kubectl get nodes
+    ```
+5. Install NGINX Ingress Controller and verify its pods and services:
+    ```bash
+    kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.10.1/deploy/static/provider/aws/deploy.yaml
+    ```
+    ```bash
+    kubectl get pods -n ingress-nginx
+    kubectl get svc -n ingress-nginx
+    ```
+6. Apply Kubernetes Manifests:
+    ```bash
+    kubectl apply -f kubernetes/secrets/
+    kubectl apply -f kubernetes/persistentVolumeClaim/
+    kubectl apply -f kubernetes/deployments/
+    kubectl apply -f kubernetes/services/
+    kubectl apply -f kubernetes/ingress/
+    ```
+7. Verify Deployment:
+    ```bash
+   kubectl get pods
+   kubectl get pvc
+   kubectl get all
+    ```
+8. Access the web-application using the DNS endpoint noted from Terraform apply command earlier.
+9. CI/CD integration:
+     - Push changes to GitHub to trigger the CI/CD pipeline. 
+     ```bash
+     git add .
+     git commit -m "CI/CD deploy update"
+     git push origin main
+     ```
+
 
 ---
 
