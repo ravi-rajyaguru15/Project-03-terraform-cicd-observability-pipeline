@@ -175,8 +175,36 @@ Project_03/
      git commit -m "CI/CD deploy update"
      git push origin main
      ```
-
-
+10. Monitoring setup with Helm:
+    - Add Prometheus and Grafana charts: 
+     ```bash
+     helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+     helm repo add grafana https://grafana.github.io/helm-charts
+     helm repo update
+     ```
+    - Create a namespace for monitoring:
+     ```bash
+     kubectl create namespace monitoring
+     ```
+    - Install Prometheus:
+     ```bash
+     helm install prometheus prometheus-community/prometheus \
+     --namespace monitoring \
+     --create-namespace \
+     --set server.persistentVolume.enabled=false
+     ```
+     - Install Grafana:
+     ```bash
+     helm install grafana grafana/grafana --namespace monitoring
+     ```
+     - get Grafana password and access the grafana GUI via port forwarding:
+     ```bash
+     kubectl get secret --namespace monitoring grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+     kubectl port-forward --namespace monitoring svc/grafana 3000:80
+     
+     # Open http://localhost:3000 
+     # Default credentials: admin / <decoded-password>
+     ```
 ---
 
 ## Engineering Decisions
@@ -202,8 +230,6 @@ Project_03/
      - CrashLoopBackOff due to initContainer misconfiguration, and PVC mounting error.
      - Prometheus service pod not initializing due to Persistent Volume not binding - solved via disabling PV ensuring quick troubleshooting deployment.
 - **Docker Hub registry images rebuilt**:  Custom web app changes were not reflected in previous Docker image — rebuilt and pushed custom app image to Docker Hub again to preserve integrity. Read Attribution for more information regarding custom web app changes.
-
-ELB not routing due to NGINX misannotations
 
 ---
 
