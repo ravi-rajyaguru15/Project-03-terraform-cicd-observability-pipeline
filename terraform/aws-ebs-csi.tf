@@ -1,6 +1,5 @@
-###############################################################################
 # EBS CSI driver – IAM role (IRSA) + EKS add-on
-###############################################################################
+
 
 # 1) Trust policy so the driver’s ServiceAccount can assume this role
 data "aws_iam_policy_document" "ebs_csi_assume" {

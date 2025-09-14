@@ -16,6 +16,10 @@ This project demonstrates the deployment of a full-stack Java-based microservice
 
 ---
 
+## Architecture Overview
+![Project 1 architecture](images/architecture/project-3-architecture.png)
+
+---
 ## 📦 Components
 
 ### Application Stack
