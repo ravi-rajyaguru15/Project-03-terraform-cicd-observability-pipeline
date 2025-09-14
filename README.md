@@ -133,8 +133,6 @@ Project_03/
     terraform init
     terraform plan
     terraform apply     # Approve this request with "yes" when Terraform prompt occurs
-
-    # Take a note of the "cluster_endpoint", it will be used to access the web app
     ```
 4. Connect to the cluster and get node information:
     ```bash
@@ -165,9 +163,13 @@ Project_03/
    kubectl get pvc
    kubectl get all
     ```
-8. Access the web-application using the DNS endpoint noted from Terraform apply command earlier.
-9. CI/CD integration:
-     - Push changes to GitHub to trigger the CI/CD pipeline. 
+8. Access the web-application using the DNS endpoint form ingress nginx service: 
+    ```bash
+    # Locate EXTERNAL-IP of ingress-nginx service
+    
+    kubectl get svc -n ingress-nginx
+    ```
+9. CI/CD integration: Push changes to GitHub to trigger the CI/CD pipeline. 
      ```bash
      git add .
      git commit -m "CI/CD deploy update"
