@@ -1,0 +1,68 @@
+
+name: Infra + App Deployment to EKS
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'terraform/**'
+      - 'kubernetes/**'
+
+jobs:
+  deploy:
+    name: Terraform Infra + K8s Deploy
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_REGION: us-east-1
+      CLUSTER_NAME: project3-eks-cluster
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      # ---------- TERRAFORM BLOCK ----------
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.8.2
+
+      - name: Terraform Init
+        working-directory: terraform/
+        run: terraform init
+
+      - name: Terraform Plan
+        working-directory: terraform/
+        run: terraform plan
+
+      - name: Terraform Apply
+        working-directory: terraform/
+        run: terraform apply -auto-approve
+
+      # ---------- KUBECTL DEPLOYMENT ----------
+      - name: Update Kubeconfig for EKS
+        run: aws eks update-kubeconfig --region $AWS_REGION --name $CLUSTER_NAME
+
+      - name: Apply Kubernetes Manifests
+        run: |
+          kubectl apply -f kubernetes/secrets/
+          kubectl apply -f kubernetes/persistentVolumeClaim/
+          kubectl apply -f kubernetes/deployments/
+          kubectl apply -f kubernetes/services/
+          kubectl apply -f kubernetes/ingress/
+
+      - name: Verify Deployment
+        run: |
+          kubectl get pods
+          kubectl get svc
+          kubectl get ingress
+          kubectl rollout status deployment/web-app
+
