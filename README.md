@@ -62,7 +62,7 @@ Just push code to main branch and GitHub Actions takes care of provisioning, dep
 
 ## Repository Structure
 ```text
-Project_02/
+Project_03/
 │
 ├── .github/                                       # GitHub Actions CI/CD pipeline
 │   └── workflows/                                
