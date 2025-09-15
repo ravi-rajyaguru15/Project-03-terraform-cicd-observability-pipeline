@@ -216,7 +216,7 @@ Project_03/
           - Input the dashboard ID (see list below) -> select "Load"  
           - In next step select Prometheus as data source. The monitoring window will now be live.
      - Recommended Dashboard IDs:
-          - 
+           
             | Dashboard                                         | Grafana.com ID   | 
             |---------------------------------------------------|------------------|
             | Kubernetes cluster monitoring (via Prometheus)    |       315        |
