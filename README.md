@@ -121,20 +121,20 @@ Project_03/
 
 ## How to Deploy (Reproduction steps)
 
-1.  **Prerequisites/Dependencies**:
+1. **Prerequisites/Dependencies**:
       - Local machine with `aws-cli`, `eksctl`, `kubectl`, and `git` installed
       - AWS account configured via aws cli, and with appropriate IAM user, and access rights
       - Terraform installed and accessible globally
       - GitHub repository created to store the project, and configured with appropriate Actions Repository secrets to access your AWS account.  
       - A remote S3 bucket created manually beforehand (for storing Terraform backend state) with matching name in terraform/terraform.tf file.
 2. Open the bash terminal and fetch the project files via git clone, and navigate into the project folder.
-3. Create EKS cluster via terraform:
+3. Create EKS cluster via terraform: Make sure you are into Project-3/terraform/ before executing these commands.
     ```bash
     terraform init
     terraform plan
     terraform apply     # Approve this request with "yes" when Terraform prompt occurs
     ```
-4. Connect to the cluster and get node information:
+4. Connect to the cluster and get node information: Make sure you are into Project-3/ before executing these commands.
     ```bash
     aws eks update-kubeconfig --region us-east-1 --name project3-eks-cluster
     ```
@@ -205,6 +205,34 @@ Project_03/
      # Open http://localhost:3000 
      # Default credentials: admin / <decoded-password>
      ```
+11. Monitoring: Import a Prebuilt Dashboard into Grafana (step-by-step)
+     A. Log in to Grafana
+     B. Add prometheus as a Data source:
+         - On Grafana home page, on left sidebar select "Connections -> Data Sources"
+         - Once inside Data sources, select "Add data source -> Select Prometheus"
+         - Once inside Prometheus setup, set URL to "http://prometheus-server.monitoring.svc.cluster.local" -> Save & Test
+     C. Import a Kubernetes monitoring dashboard:
+         - On Grafana home page, on left sidebar select "Dashboards -> New -> Import"
+         - Input the dashboard ID (see list below) -> select "Load"  
+         - In next step select Prometheus as data source. The monitoring window will now be live.
+     D. Recommended Dashboard IDs:
+         - | Dashboard                                         | Grafana.com ID   | 
+           |---------------------------------------------------|------------------|
+           | Kubernetes cluster monitoring (via Prometheus)    |       315        |
+           | Node Exporter Full (node-level metrics)           |       1860       | 
+           | Prometheus 2.0 Overview                           |       3662       | 
+12. After verifying everything, terminate and clean everything to avoid incurring unnecessary AWS costs:
+    Make sure you are into Project-3/terraform/ before executing these commands.
+    ```bash
+     # Destroy the EKS module only, which removes the cluster, node groups, load balancers (ELB/NLBs) and their Elastic Network Interfaces (ENI)
+     terraform destroy -target=module.eks -auto-approve
+
+     # With the ENIs gone, Terraform can now delete subnets and detach the Internet Gateways (IGW).
+     terraform destroy -auto-approve
+
+     #Summary: First remove the EKS layer to free its load-balancer network interfaces; then the full destroy can safely delete the remaining subnets and Internet Gateway.
+     ```
+    
 ---
 
 ## Engineering Decisions
