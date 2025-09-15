@@ -127,14 +127,18 @@ Project_03/
       - Terraform installed and accessible globally
       - GitHub repository created to store the project, and configured with appropriate Actions Repository secrets to access your AWS account.  
       - A remote S3 bucket created manually beforehand (for storing Terraform backend state) with matching name in terraform/terraform.tf file.
+
 2. Open the bash terminal and fetch the project files via git clone, and navigate into the project folder.
+
 3. Create EKS cluster via terraform: Make sure you are into Project-3/terraform/ before executing these commands.
+
     ```bash
     terraform init
     terraform plan
     terraform apply     # Approve this request with "yes" when Terraform prompt occurs
     ```
 4. Connect to the cluster and get node information: Make sure you are into Project-3/ before executing these commands.
+
     ```bash
     aws eks update-kubeconfig --region us-east-1 --name project3-eks-cluster
     ```
@@ -142,6 +146,7 @@ Project_03/
     kubectl get nodes
     ```
 5. Install NGINX Ingress Controller and verify its pods and services:
+
     ```bash
     kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.10.1/deploy/static/provider/aws/deploy.yaml
     ```
@@ -150,6 +155,7 @@ Project_03/
     kubectl get svc -n ingress-nginx
     ```
 6. Apply Kubernetes Manifests:
+
     ```bash
     kubectl apply -f kubernetes/secrets/
     kubectl apply -f kubernetes/persistentVolumeClaim/
@@ -158,18 +164,21 @@ Project_03/
     kubectl apply -f kubernetes/ingress/
     ```
 7. Verify Deployment:
+
     ```bash
    kubectl get pods
    kubectl get pvc
    kubectl get all
     ```
 8. Access the web-application using the DNS endpoint form ingress nginx service: 
+
     ```bash
     # Locate EXTERNAL-IP of ingress-nginx service
     
     kubectl get svc -n ingress-nginx
     ```
 9. CI/CD integration: Push changes to GitHub to trigger the CI/CD pipeline. 
+
      ```bash
      git add .
      git commit -m "CI/CD deploy update"
@@ -177,16 +186,19 @@ Project_03/
      ```
 10. Monitoring setup with Helm:
     - Add Prometheus and Grafana charts: 
+     
      ```bash
      helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
      helm repo add grafana https://grafana.github.io/helm-charts
      helm repo update
      ```
     - Create a namespace for monitoring:
+     
      ```bash
      kubectl create namespace monitoring
      ```
     - Install Prometheus:
+     
      ```bash
      helm install prometheus prometheus-community/prometheus \
      --namespace monitoring \
@@ -194,10 +206,12 @@ Project_03/
      --set server.persistentVolume.enabled=false
      ```
      - Install Grafana:
+     
      ```bash
      helm install grafana grafana/grafana --namespace monitoring
      ```
      - get Grafana password and access the grafana GUI via port forwarding:
+     
      ```bash
      kubectl get secret --namespace monitoring grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
      kubectl port-forward --namespace monitoring svc/grafana 3000:80
@@ -224,6 +238,7 @@ Project_03/
             | Prometheus 2.0 Overview                           |       3662       | 
 12. After verifying everything, terminate and clean everything to avoid incurring unnecessary AWS costs:
     Make sure you are into Project-3/terraform/ before executing these commands.
+    
     ```bash
      # Destroy the EKS module only, which removes the cluster, node groups, load balancers (ELB/NLBs) and their Elastic Network Interfaces (ENI)
      terraform destroy -target=module.eks -auto-approve
