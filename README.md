@@ -45,14 +45,15 @@ This system mirrors how a DevOps engineer would structure and automate real-worl
 
 ---
 
-## 🧩 Stack Overview
+##  Infrastructure Overview (AWS)
 
-- **Infrastructure as Code:** Terraform
-- **Cloud Provider:** AWS (EKS, EC2, VPC, IAM)
-- **Container Orchestration:** Kubernetes
-- **CI/CD:** GitHub Actions
-- **Monitoring:** Prometheus + Grafana
-- **Application:** Java-based microservices (Spring Boot)
+- EKS cluster provisioned via Terraform with managed node groups
+- VPC with public and private subnets, route tables, NAT gateway, and security groups (Terraform-managed)
+- Elastic Block Store (EBS) for persistent volume claims (MySQL storage)
+- IAM role + EBS CSI Driver configured via Terraform for dynamic PVC provisioning
+- Application load balancing handled by AWS ELB via NGINX Ingress annotations
+- S3 bucket configured as Terraform backend to store remote state
+- DynamoDB table used for Terraform state locking and consistency
 
 ---
 
