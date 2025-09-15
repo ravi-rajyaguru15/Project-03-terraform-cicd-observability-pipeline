@@ -1,5 +1,5 @@
 
-# Project 3: Provisioning of EKS deployment of Multi-service Java App  using Terraform with Git Hub Actions CI/CD and Observability pipeline 
+# Project 3: EKS Infrastructure Deployment with Terraform, GitHub Actions CI/CD, and Observability  
 
 [![Infrastructure](https://img.shields.io/badge/IaC-Terraform-blue)](#)
 [![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub_Actions-green)](#)
@@ -23,7 +23,7 @@ This project is the **final milestone** in a self-designed 3-part DevOps portfol
 
 This project is the culmination of a three-stage DevOps transformation system, integrating all foundational elements of modern cloud infrastructure, automation, and operations. It takes the multi-service web application containerized and orchestrated in earlier projects, and builds a production-grade platform around it — fully automated, reproducible, and observable.
 
-All infrastructure provisioning is handled through Terraform, which defines and deploys the EKS cluster, VPC, subnets, IAM roles, and load balancers. On top of that, GitHub Actions orchestrates an end-to-end CI/CD pipeline that builds, tests, and deploys Kubernetes resources to the live cluster with zero manual intervention. The k8s objects needs to be deployed manually for the first time just like Project 2, after that GitHub Actions can take over any further changes.
+All infrastructure provisioning is handled through Terraform, which defines and deploys the EKS cluster, VPC, subnets, IAM roles, and load balancers. On top of that, GitHub Actions orchestrates an end-to-end CI/CD pipeline that builds, tests, and deploys Kubernetes resources to the live cluster with zero manual intervention. Kubernetes objects needs to be deployed manually for the first time just like Project 2, after that GitHub Actions can take over any further changes.
 
 For deployment, the application components (Java web app, MySQL, RabbitMQ, Memcached) are deployed into EKS via modular YAML manifests, and exposed to the internet via an Ingress controller integrated with AWS ELB.
 
@@ -53,7 +53,7 @@ This system mirrors how a DevOps engineer would structure and automate real-worl
 - IAM role + EBS CSI Driver configured via Terraform for dynamic PVC provisioning
 - Application load balancing handled by AWS ELB via NGINX Ingress annotations
 - S3 bucket configured as Terraform backend to store remote state
-- DynamoDB table used for Terraform state locking and consistency
+- DynamoDB table used to manage Terraform state locking and consistency
 
 ---
 
@@ -263,7 +263,7 @@ This is a known AWS behavior and not a Terraform configuration error.
 ```
 ---
 
-## Engineering Decisions
+## Engineering Insights
 
 - **Terraform-Only Infrastructure**: No manual AWS setup. Every component is provisioned via Terraform — including VPC, subnets, NAT, internet gateway, EKS cluster, worker nodes, and IAM policies.
 - **GitHub Actions CI/CD Pipeline**:
@@ -275,7 +275,7 @@ This is a known AWS behavior and not a Terraform configuration error.
      - IAM role is programmatically attached using an additional Terraform file.
 - **Kubernetes Infrastructure**:
      - Manifests are modular: secrets, services, PVC, deployments, ingress.
-     - All manifests are written manually, not scaffolded - taken over from Project 2 - ensures reusability and saves time
+     - Manifests are written manually and taken over from Project 2 - ensuring reusability and reducing redundant effort.
      - initContainers used for readiness sequencing (e.g., MySQL PVC needs cleaning before mount).
 - **Observability with Prometheus & Grafana**:
      - Monitoring is enabled through Prometheus scraping.
@@ -285,7 +285,7 @@ This is a known AWS behavior and not a Terraform configuration error.
      - IAM bindings for EBS CSI - automated it instead of performing manual patchwork everytime
      - CrashLoopBackOff due to initContainer misconfiguration, and PVC mounting error.
      - Prometheus service pod not initializing due to Persistent Volume not binding - solved via disabling PV ensuring quick troubleshooting deployment.
-- **Docker Hub registry images rebuilt**:  Custom web app changes were not reflected in previous Docker image — rebuilt and pushed custom app image to Docker Hub again to preserve integrity. Read Attribution for more information regarding custom web app changes.
+- **Docker Hub registry images rebuilt**:  Custom web app changes were not reflected in previous Docker image — rebuilt and pushed custom app image to Docker Hub again to preserve integrity.
 
 ---
 
@@ -308,9 +308,20 @@ Here's what happens when a commit pushed to main branch, after initial setup:
 
 ---
 
+## What This Project Project Demonstrates
+
+- End-to-end automation: Provisioned AWS infrastructure entirely via Terraform, including EKS, IAM, VPC, and networking layers — no manual AWS setup.
+- CI/CD pipeline ownership: Built a GitHub Actions pipeline for zero-touch infrastructure provisioning and app deployment.
+- Kubernetes orchestration at scale: Deployed and debugged Secrets, PVCs, initContainers, and Ingress in a multi-service setup.
+- Production-grade monitoring: Enabled full-stack observability using Prometheus and Grafana (via Helm) with working dashboards.
+- Practical DevOps problem-solving: Independently solved real-world issues around IAM bindings, storage drivers, init sequencing, and crash loops.
+- Clean, modular system architecture: Separated IaC, app manifests, secrets, CI, and legacy layers for maintainability and reuse.
+
+---
+
 ## Final Thoughts
 
-This project was not just about building a working infrastructure pipeline — it was about proving full-cycle ownership of modern DevOps workflows. Every component in this system, from VPC routing to CI automation to monitoring dashboards, was individually understood, implemented, and validated.
+This project was not only a demonstration of building end-to-end infrastructure — it was a test of full-cycle ownership, system design, and debugging under realistic constraints. Every component in this system, from VPC routing to CI automation to monitoring dashboards, was individually understood, implemented, and validated.
 
 Rather than relying on out-of-the-box scaffolding or third-party abstractions, all infrastructure was written independently using Terraform, and every Kubernetes resource was deployed and debugged directly through version-controlled manifests. This includes realistic challenges such as IAM policy attachment, storage driver configuration, initContainer sequencing, and load balancer integration — each of which required non-trivial debugging and architectural decisions.
 
@@ -323,6 +334,6 @@ In summary, this repository reflects a complete, deployable system — not a sam
 ## Attribution
 The Java web application used in this project was externally sourced. All containerization, orchestration, deployment strategy, and infrastructure setup were independently implemented. Although it being way out of scope, and to ensure the system appeared more production-ready and portfolio-appropriate, all course-specific branding was removed; UI elements and presentation were modified to reflect a generic, open-source-style web application. 
 
-A delibrate and calculated decision was also made to use the same web apllication throughout all 3 projects. This allowed full attention to be directed towards infrastructure, deployment, and DevOps process engineering.
+A deliberate and calculated decision was also made to use the same web application throughout all 3 projects. This allowed full attention to be directed towards infrastructure, deployment, and DevOps process engineering.
 
 ---
