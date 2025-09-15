@@ -206,17 +206,17 @@ Project_03/
      # Default credentials: admin / <decoded-password>
      ```
 11. Monitoring: Import a Prebuilt Dashboard into Grafana (step-by-step)
-     - A. Log in to Grafana
-     - B. Add prometheus as a Data source:
-           - On Grafana home page, on left sidebar select "Connections -> Data Sources"
-           - Once inside Data sources, select "Add data source -> Select Prometheus"
-           - Once inside Prometheus setup, set URL to "http://prometheus-server.monitoring.svc.cluster.local" -> Save & Test
-     - C. Import a Kubernetes monitoring dashboard:
+     - Log in to Grafana
+     - Add prometheus as a Data source:
+          - On Grafana home page, on left sidebar select "Connections -> Data Sources"
+          - Once inside Data sources, select "Add data source -> Select Prometheus"
+          - Once inside Prometheus setup, set URL to "http://prometheus-server.monitoring.svc.cluster.local" -> Save & Test
+     - Import a Kubernetes monitoring dashboard:
            - On Grafana home page, on left sidebar select "Dashboards -> New -> Import"
            - Input the dashboard ID (see list below) -> select "Load"  
            - In next step select Prometheus as data source. The monitoring window will now be live.
-     - D. Recommended Dashboard IDs:
-           - | Dashboard                                         | Grafana.com ID   | 
+     - Recommended Dashboard IDs:
+             | Dashboard                                         | Grafana.com ID   | 
              |---------------------------------------------------|------------------|
              | Kubernetes cluster monitoring (via Prometheus)    |       315        |
              | Node Exporter Full (node-level metrics)           |       1860       | 
