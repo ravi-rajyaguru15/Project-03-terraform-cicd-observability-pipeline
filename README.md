@@ -180,7 +180,7 @@ Project_03/
     
     kubectl get svc -n ingress-nginx
     ```
-9. CI/CD integration: Push changes to GitHub to trigger the CI/CD pipeline. 
+9. CI/CD integration: Push changes to GitHub to trigger the CI/CD pipeline. The following secrets were configured in GitHub Actions: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_REGION`.
 
      ```bash
      git add .
@@ -332,7 +332,7 @@ In summary, this repository reflects a complete, deployable system — not a sam
 ---
 
 ## Attribution
-The Java web application used in this project was externally sourced. All containerization, orchestration, deployment strategy, and infrastructure setup were independently implemented. Although it being way out of scope, and to ensure the system appeared more production-ready and portfolio-appropriate, all course-specific branding was removed; UI elements and presentation were modified to reflect a generic, open-source-style web application. 
+The Java web application used in this project was externally sourced. All containerization, orchestration, deployment strategy, and infrastructure setup were independently implemented. Although modifying the frontend was beyond the initial scope, and to ensure the system appeared more production-ready and portfolio-appropriate, all course-specific branding was removed; UI elements and presentation were modified to reflect a generic, open-source-style web application. 
 
 A deliberate and calculated decision was also made to use the same web application throughout all 3 projects. This allowed full attention to be directed towards infrastructure, deployment, and DevOps process engineering.
 
