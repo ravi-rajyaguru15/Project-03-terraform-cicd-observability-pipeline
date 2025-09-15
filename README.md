@@ -173,7 +173,7 @@ Project_03/
    kubectl get pvc
    kubectl get all
     ```
-8. Access the web-application using the DNS endpoint form ingress nginx service: 
+8. Access the web-application using the DNS endpoint from ingress nginx service: 
 
     ```bash
     # Locate EXTERNAL-IP of ingress-nginx service
@@ -251,7 +251,16 @@ Project_03/
 
      #Summary: First remove the EKS layer to free its load-balancer network interfaces; then the full destroy can safely delete the remaining subnets and Internet Gateway.
      ```
-    
+```text
+Notes on terraform destroy:
+
+In some cases, `terraform destroy` may fail due to AWS retaining Elastic IPs, NAT Gateways, or ENIs tied to the VPC or subnets. If that happens:
+
+- Manually delete these resources via AWS CLI or Console
+- Then retry `terraform destroy`
+
+This is a known AWS behavior and not a Terraform configuration error.
+```
 ---
 
 ## Engineering Decisions
