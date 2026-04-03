@@ -8,7 +8,7 @@ on:
     paths:
       - 'terraform/**'
       - 'kubernetes/**'
-GitHub workflow:
+  workflow_dispatch:
 
 jobs:
   deploy:
