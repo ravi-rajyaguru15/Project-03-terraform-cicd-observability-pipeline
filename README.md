@@ -232,7 +232,7 @@ Project_03/
      kubectl port-forward --namespace monitoring svc/grafana 3000:80
      ```
      ```text
-     Open `http://localhost:3000` and log in with:
+     Open <http://localhost:3000> and log in with:
 
      Username: admin
      Password: <decoded-password>
