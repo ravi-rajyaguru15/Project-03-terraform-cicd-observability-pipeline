@@ -9,13 +9,14 @@
 
 ---
 
-## About the 3-Project DevOps System
+## About the 4-Project DevOps System
 
-This self-designed, 3-part DevOps portfolio series is intended to demonstrate the staged cloud migration and infrastructure maturity path of a multi-service web application: from containerization, to Kubernetes orchestration, to infrastructure automation, CI/CD, and observability.
+This self-designed, 4-part DevOps portfolio series is intended to demonstrate the staged cloud migration and infrastructure maturity path of a multi-service web application: from containerization, to Kubernetes orchestration, to infrastructure automation, CI/CD, and observability and finally to Gitops-based application delivery.
 
 - **Project 1**: Multi-service containerization and deployment using Docker Compose on AWS EC2 - [Project 1](https://github.com/ravi-rajyaguru15/Project-01-dockerized-multi-service-application)
 - **Project 2**: Kubernetes orchestration of the same application stack on AWS EKS - [Project 2](https://github.com/ravi-rajyaguru15/Project-02-eks-k8s-infrastructure-orchestration)
 - **Project 3 (this)**: Infrastructure as Code with Terraform, CI/CD via GitHub Actions, and monitoring using Prometheus and Grafana
+- **Project 4**: GitOps-based application delivery on AWS EKS using GitHub Actions and Argo CD - [Project 4](https://github.com/ravi-rajyaguru15/Project-04-gitops-argocd)
 
 The Java web application used across this portfolio is externally sourced. Minor UI/content adjustments are made to remove source-specific branding and present it as a neutral demo web application. The infrastructure design, containerization, cloud deployment, Kubernetes manifests, Terraform configuration, CI/CD workflow setup, monitoring integration, documentation, troubleshooting, and migration-stage decisions were independently implemented. The same application stack is intentionally reused across all three projects so the focus remains on infrastructure maturity and core DevOps practices.
 
@@ -251,20 +252,20 @@ Project_03/
      | Prometheus 2.0 Overview                           |       3662       | 
    
            
-            
-14. After verification, destroy the infrastructure to avoid unnecessary AWS costs:
+14. After verification, remove the ingress resources before destroying the AWS infrastructure:
+
+    ```bash
+    kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.10.1/deploy/static/provider/aws/deploy.yaml
+    ```
+
+15. Thereafter destroy the infrastructure to avoid unnecessary AWS costs:
     
     ```bash
      cd terraform
      
-     terraform destroy -target=module.eks -auto-approve
-     terraform destroy -auto-approve
+     terraform plan -destroy
+     terraform destroy
      ```
-    ```text
-    Notes on terraform destroy:
-
-    If Terraform destroy gets stuck because AWS is still retaining dependent resources such as ENIs, NAT gateway resources, or Elastic IPs, remove the blocking resources from the AWS Console or AWS CLI and rerun terraform destroy.
-    ```
 ---
 
 ## Engineering Insights
